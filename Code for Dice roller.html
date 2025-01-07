@@ -1,0 +1,121 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Dice Roller
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Roboto', sans-serif;
+        }
+  </style>
+ </head>
+ <body class="bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-md w-full">
+   <h1 class="text-4xl font-bold mb-6 text-gray-800">
+    Dice Roller
+   </h1>
+   <div id="authSection" class="mb-6">
+    <input class="border border-gray-300 p-2 rounded mb-4 w-full" id="username" placeholder="Enter your username" type="text"/>
+    <button class="bg-green-500 text-white px-6 py-3 rounded-full hover:bg-green-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75" id="signInButton">
+     Sign In
+    </button>
+   </div>
+   <div id="diceSection" class="hidden">
+    <div class="flex justify-center mb-6">
+     <img alt="A placeholder image of a dice showing a random number" class="w-24 h-24" height="100" id="diceImage" src="https://storage.googleapis.com/a1aa/image/XswxXufaoa32S6jgfgPVIuuie9PJEGxfmTRVlFRlLcR6JZLQB.jpg" width="100"/>
+    </div>
+    <button class="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75" id="rollButton">
+     Roll Dice
+    </button>
+    <div class="mt-6">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-700">
+      Previous Rolls
+     </h2>
+     <ul class="list-disc list-inside text-left text-gray-600" id="rollHistory">
+      <!-- Previous rolls will be appended here -->
+     </ul>
+     <div class="mt-4 text-gray-700">
+      <span class="font-semibold">
+       Total Rolls:
+      </span>
+      <span id="totalRolls">
+       0
+      </span>
+     </div>
+     <button class="bg-red-500 text-white px-6 py-3 rounded-full hover:bg-red-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 mt-4" id="signOutButton">
+      Sign Out
+     </button>
+    </div>
+    <div class="mt-6">
+     <h2 class="text-2xl font-semibold mb-4 text-gray-700">
+      Leaderboard
+     </h2>
+     <ul class="list-decimal list-inside text-left text-gray-600" id="leaderboard">
+      <!-- Leaderboard will be appended here -->
+     </ul>
+    </div>
+   </div>
+  </div>
+  <script>
+   let totalRolls = 0;
+        let leaderboard = [];
+
+        document.getElementById('signInButton').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('diceSection').classList.remove('hidden');
+                updateLeaderboard();
+            } else {
+                alert('Please enter a username.');
+            }
+        });
+
+        document.getElementById('signOutButton').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            if (username) {
+                leaderboard.push({ username: username, rolls: totalRolls });
+                leaderboard.sort((a, b) => b.rolls - a.rolls);
+                updateLeaderboard();
+            }
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('diceSection').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('rollHistory').innerHTML = '';
+            totalRolls = 0;
+            document.getElementById('totalRolls').textContent = totalRolls;
+        });
+
+        document.getElementById('rollButton').addEventListener('click', function() {
+            const diceNumber = Math.floor(Math.random() * 6) + 1;
+            const diceImage = document.getElementById('diceImage');
+            diceImage.src = `https://placehold.co/100x100?text=${diceNumber}`;
+            diceImage.alt = `A placeholder image of a dice showing the number ${diceNumber}`;
+
+            const rollHistory = document.getElementById('rollHistory');
+            const newRoll = document.createElement('li');
+            newRoll.textContent = `Rolled a ${diceNumber}`;
+            rollHistory.appendChild(newRoll);
+
+            totalRolls++;
+            document.getElementById('totalRolls').textContent = totalRolls;
+        });
+
+        function updateLeaderboard() {
+            const leaderboardElement = document.getElementById('leaderboard');
+            leaderboardElement.innerHTML = '';
+            leaderboard.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${entry.username}: ${entry.rolls} rolls`;
+                leaderboardElement.appendChild(listItem);
+            });
+        }
+  </script>
+ </body>
+</html>
